@@ -1,9 +1,5 @@
 import uvicorn
 import fastapi
-
-
-from typing import Optional
-
 from fastapi import FastAPI
 
 app = FastAPI()
@@ -13,15 +9,18 @@ app = FastAPI()
 def read_root():
     return {"status": "Alive"}
 
-@app.post()
+
+@app.post("newtakala")
 def new_takala():
     return "tair do your job please"
 
-@app.post()
+
+@app.post("searchtakala")
 def search_takala():
     return "ofir where are you?"
 
-@app.post()
+
+@app.post("/mytakalot")
 def my_board():
     return "pashoshi?"
 
