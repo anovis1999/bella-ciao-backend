@@ -1,6 +1,7 @@
 import uvicorn
-import fastapi
 from fastapi import FastAPI
+from search_takala import search_takala_in_mongo
+
 
 app = FastAPI()
 
@@ -10,14 +11,15 @@ def read_root():
     return {"status": "Alive"}
 
 
-@app.post("newtakala")
+@app.post("/newtakala")
 def new_takala():
     return "tair do your job please"
 
 
-@app.post("searchtakala")
-def search_takala():
-    return "ofir where are you?"
+@app.post("/searchtakala")
+def search_takala(ID: int):
+    takala = search_takala_in_mongo(ID)
+    return str(takala)
 
 
 @app.post("/mytakalot")
