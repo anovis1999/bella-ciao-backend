@@ -16,9 +16,12 @@ class mongodb:
             return e
         return connection
 
-    def mongo_insert_single_document(self,connection,document):
+    def mongo_insert_document(self,connection,document):
         try:
-            inserted_file = connection.insert_one(document)
+            if type(document)==list:
+                inserted_file = connection.insert_many(document)
+            else:
+                inserted_file = connection.insert_one(document)
         except Exception as e:
             print(e)
             return e
@@ -50,23 +53,24 @@ class mongodb:
         return updated_document
 
 
-# json = {"id":"12341244"}
+# json = {"id" : "12345", "system" : "gil"}
 
 #example how to get connection#
 
-# base_con = mongodb("mongodb://localhost:27017/","bella-ciao","takalot")
-# con = base_con.mongo_get_connection()
+# mongo_instance = mongodb("mongodb://localhost:27017/", "bella-ciao", "takalot")
+# con = mongo_instance.mongo_get_connection()
 
 #example how to index#
 
-# x = base_con.mongo_insert_single_document(con,json)
+# x = mongo_instance.mongo_insert_document(con,json)
 # print(x)
 
 #example how to search and read from mongo#
 
-# x = base_con.mongo_search_document(con,json)
+# x = mongo_instance.mongo_search_document(con,json)
+# print(x)
 # for doc in x:
 #     print(doc)
 
-# x = base_con.mongo_update_document(con,json,{"id":"12345"})
+# x = mongo_instance.mongo_update_document(con,json,{"id":"12345"})
 # print(x)
