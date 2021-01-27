@@ -35,6 +35,14 @@ class mongodb:
             return e
         return searched_document
 
+    def mongo_search_custom_query(self,connection,query):
+        try:
+            searched_documents = connection.find(query)
+        except Exception as e:
+            print(e)
+            return e
+        return searched_documents
+
     def mongo_delete_document(self,connection,document):
         try:
             deleted_document = connection.delete_one(document)
