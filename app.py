@@ -3,10 +3,7 @@ from fastapi import FastAPI
 import search_takala
 import pull_takalot
 import takala_status
-import hashlib
-import time
-from fastapi.encoders import jsonable_encoder
-from mongodb_api import mongodb
+import new_takala
 import takala
 
 app = FastAPI()
@@ -19,17 +16,12 @@ def is_alive():
 
 @app.post("/random")
 def get_random_id():
-    hash = hashlib.sha1()
-    hash.update(str(time.time()).encode("utf-8"))
-    return hash.hexdigest()[:10]
+    return new_takala.get_random_takala_id()
+
 
 @app.post("/newtakala")
 def new_failure(params: takala.Item):
-    my_mongodb = mongodb("mongodb://localhost:27017/", "bella-ciao", "takala")
-    conn = my_mongodb.mongo_get_connection()
-    my_mongodb.mongo_insert_document(conn, jsonable_encoder(params))
-
-    return "tair do your job pls"
+    return new_takala.add_takala(params)
 
 
 @app.post("/searchtakala")

@@ -2,7 +2,7 @@ import config
 import mongodb_api
 
 
-#takalot per user
+# takalot per user
 def get_all_takalot_board(user):
     try:
         takalot = []
@@ -22,7 +22,8 @@ def get_all_takalot_board(user):
         print(e)
         return e
 
-#takalot per team
+
+# takalot per team
 def get_all_team_takalot(team):
     try:
         takalot = []
