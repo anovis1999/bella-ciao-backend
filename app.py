@@ -2,6 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 import search_takala
 import pull_takalot
+import takala_status
 
 
 app = FastAPI()
@@ -18,33 +19,41 @@ def new_takala():
 
 
 @app.post("/searchtakala")
-def search_takala_id(ID: int):
-    takala = search_takala.search_takala_in_mongo(ID)
+def search_takala_id(takala_id: str):
+    takala = search_takala.search_takala_in_mongo(takala_id)
     return takala
 
 
 @app.post("/mytakalot")
-def my_board(USER: str):
-    takala = pull_takalot.get_all_takalot_board(USER)
+def my_board(user: str):
+    takala = pull_takalot.get_all_takalot_board(user)
     return takala
 
 
 @app.post("/teamtakalot")
-def my_team_board(TEAM: str):
-    takala = pull_takalot.get_all_team_takalot(TEAM)
+def my_team_board(team: str):
+    takala = pull_takalot.get_all_team_takalot(team)
+    return takala
+
+
+@app.post("/changestatus")
+def change_takala_status(takala_id: str ,wanted_status: str, current_status: str):
+    takala = takala_status.change_takala_status(takala_id,wanted_status, current_status)
     return takala
 
 
 @app.post("/transfertakala")
-def my_board(TEAM: str):
+def change_team(team: str):
     return "ofir code here"
 
 
 @app.post("/addtakalanotification")
-def my_board(MESSAGE: str):
+def add_notification(takala_id: str,message: str):
     return "yoav code here"
 
-
+@app.post("/returntakalanotifications")
+def get_notifications(takala_id: str,message: str):
+    return "yoav code here"
 
 
 if __name__ == "__main__":
