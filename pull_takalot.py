@@ -5,10 +5,12 @@ import mongodb_api
 def get_takala(takala_id):
     try:
         mongo_connection = mongodb_api.Mongodb(config.mongodb_address, config.db_name, config.collection_name)
+        alon = mongo_connection.mongo_search_document({"takala_id": takala_id})[0]
+        alon.pop("_id")
     except Exception as e:
         print(str(e))
         return str(e)
-    return mongo_connection.mongo_search_document({"takala_id": takala_id})[0]
+    return alon
 
 
 # takalot per user

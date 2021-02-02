@@ -43,7 +43,7 @@ async def add_new_file(file: UploadFile = File(...), takala_id: str = Form(...))
 
 @app.get("/getTakala/{takala_id}")
 async def search_takala_id(takala_id):
-    return str(pull_takalot.get_takala(takala_id))
+    return pull_takalot.get_takala(takala_id)
 
 
 @app.get("/MytTakalot")
