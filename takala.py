@@ -2,6 +2,7 @@ from typing import Optional, List
 from pydantic import BaseModel
 import datetime
 
+
 class Item(BaseModel):
     failure_id: str
     headline: str

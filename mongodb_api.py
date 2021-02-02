@@ -1,85 +1,59 @@
 import pymongo
 
 
-class mongodb:
-    def __init__(self, client_address:str, db_name:str, collection_name:str):
-        self.client_address=client_address
-        self.db_name=db_name
-        self.collection_name=collection_name
+class Mongodb:
+    def __init__(self, client_address, db_name, collection_name):
+        self.client_address = client_address
+        self.db_name = db_name
+        self.collection_name = collection_name
+        self.connection = None
+        self.client = None
 
-    def mongo_get_connection(self):
+    def _connect_to_db(self):
         try:
-            client = pymongo.MongoClient(self.client_address)
-            db = client[self.db_name]
-            connection = db[self.collection_name]
+            self.client = pymongo.MongoClient(self.client_address)
+            db = self.client[self.db_name]
+            self.connection = db[self.collection_name]
+
         except Exception as e:
-            print(e)
-            return e
-        return connection
+            raise ValueError("there was an error connecting to the db. check the credentials. ", e)
 
-    def mongo_insert_document(self,connection,document):
+    def mongo_insert_document(self, document):
         try:
-            if type(document)==list:
-                inserted_file = connection.insert_many(document)
+            self._connect_to_db()
+            if type(document) == list:
+                inserted_file = self.connection.insert_many(document)
             else:
-                inserted_file = connection.insert_one(document)
+                inserted_file = self.connection.insert_one(document)
         except Exception as e:
-            print(e)
-            return e
+            raise ValueError("could not insert document to db: ", e)
+        self.client.close()
         return inserted_file
 
-    def mongo_search_document(self,connection,document):
+    def mongo_search_document(self, document):
         try:
-            searched_document = connection.find(document)
+            self._connect_to_db()
+            searched_document = self.connection.find(document)
         except Exception as e:
-            print(e)
-            return e
+            raise ValueError("could not search mongo document. ", e)
+        self.client.close()
         return searched_document
 
-    def mongo_search_custom_query(self,connection,query):
+    def mongo_delete_document(self, document):
         try:
-            searched_documents = connection.find(query)
+            self._connect_to_db()
+            deleted_document = self.connection.delete_one(document)
         except Exception as e:
-            print(e)
-            return e
-        return searched_documents
-
-    def mongo_delete_document(self,connection,document):
-        try:
-            deleted_document = connection.delete_one(document)
-        except Exception as e:
-            print(e)
-            return e
+            raise ValueError("could not delete mongo document. ", e)
+        self.client.close()
         return deleted_document
 
-    def mongo_update_document(self,connection,old_document,new_document):
+    def mongo_update_document(self, old_document, new_document):
         try:
-            new_document = {"$set":new_document}
-            updated_document = connection.update_one(old_document,new_document)
+            self._connect_to_db()
+            new_document = {"$set": new_document}
+            updated_document = self.connection.update_one(old_document, new_document)
         except Exception as e:
-            print(e)
-            return e
+            raise ValueError("could not update mongo document. ", e)
+        self.client.close()
         return updated_document
-
-
-# json = {"id" : "12345", "system" : "gil"}
-
-#example how to get connection#
-
-# mongo_instance = mongodb("mongodb://localhost:27017/", "bella-ciao", "takalot")
-# con = mongo_instance.mongo_get_connection()
-
-#example how to index#
-
-# x = mongo_instance.mongo_insert_document(con,json)
-# print(x)
-
-#example how to search and read from mongo#
-
-# x = mongo_instance.mongo_search_document(con,json)
-# print(x)
-# for doc in x:
-#     print(doc)
-
-# x = mongo_instance.mongo_update_document(con,json,{"id":"12345"})
-# print(x)

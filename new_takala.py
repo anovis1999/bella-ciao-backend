@@ -13,11 +13,19 @@ def get_random_takala_id():
 
 def add_takala(params):
     try:
-        my_mongodb = mongodb_api.mongodb(config.mongodb_address, config.db_name, config.collection_name)
-        conn = my_mongodb.mongo_get_connection()
-        my_mongodb.mongo_insert_document(conn, jsonable_encoder(params))
+        my_mongodb = mongodb_api.Mongodb(config.mongodb_address, config.db_name, config.collection_name)
+        my_mongodb.mongo_insert_document(jsonable_encoder(params))
+        return "Successfully added."
 
-        return True
     except Exception as e:
         print(e)
-        return False
+        return "could not add new takala! reason: " + str(e)
+
+
+def update_messages(old_document, new_docunent):
+    try:
+        my_mongodb = mongodb_api.Mongodb(config.mongodb_address, config.db_name, config.collection_name)
+        my_mongodb.mongo_update_document(old_document, new_docunent)
+        return "successfully updated messages."
+    except Exception as e:
+        return "could not update messages!"
