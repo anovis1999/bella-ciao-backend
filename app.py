@@ -3,6 +3,7 @@ from fastapi import FastAPI, File, Form, UploadFile, responses, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import pull_takalot
 import takala_status
+import users
 import new_takala
 import shutil
 import os
@@ -93,10 +94,23 @@ async def get_file(takala_id):
         raise HTTPException(status_code=404, detail=e)
 
 
-# send if the user is in the db or not
-@app.get("/user")
-async def get_user():
-    pass
+# use to check if the user is in the db or not
+@app.get("/userExists/{user_name}")
+async def check_exists(user_name):
+    return users.check_user_exists(user_name)
+
+# use to create a new user in the system
+@app.post("/newUser")
+async def new_user(user_data: dict):
+    return users.add_new_user(user_data)
+
+
+@app.get("/userData/{user_name}")
+async def get_user(user_name):
+    user_data = users.get_user(user_name)
+    if user_data == "user not exists!":
+        raise HTTPException(status_code=404, detail="user not found")
+    return user_data
 
 
 if __name__ == "__main__":
