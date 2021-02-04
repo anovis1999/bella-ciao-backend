@@ -19,41 +19,29 @@ class Mongodb:
             raise ValueError("there was an error connecting to the db. check the credentials. ", e)
 
     def mongo_insert_document(self, document):
-        try:
-            self._connect_to_db()
-            if type(document) == list:
-                inserted_file = self.connection.insert_many(document)
-            else:
-                inserted_file = self.connection.insert_one(document)
-        except Exception as e:
-            raise ValueError("could not insert document to db: ", e)
+        self._connect_to_db()
+        if type(document) == list:
+            inserted_file = self.connection.insert_many(document)
+        else:
+            inserted_file = self.connection.insert_one(document)
         self.client.close()
         return inserted_file
 
     def mongo_search_document(self, document):
-        try:
-            self._connect_to_db()
-            searched_document = self.connection.find(document)
-        except Exception as e:
-            raise ValueError("could not search mongo document. ", e)
+        self._connect_to_db()
+        searched_document = self.connection.find(document)
         self.client.close()
         return searched_document
 
     def mongo_delete_document(self, document):
-        try:
-            self._connect_to_db()
-            deleted_document = self.connection.delete_one(document)
-        except Exception as e:
-            raise ValueError("could not delete mongo document. ", e)
+        self._connect_to_db()
+        deleted_document = self.connection.delete_one(document)
         self.client.close()
         return deleted_document
 
     def mongo_update_document(self, old_document, new_document):
-        try:
-            self._connect_to_db()
-            new_document = {"$set": new_document}
-            updated_document = self.connection.update_one(old_document, new_document)
-        except Exception as e:
-            raise ValueError("could not update mongo document. ", e)
+        self._connect_to_db()
+        new_document = {"$set": new_document}
+        updated_document = self.connection.update_one(old_document, new_document)
         self.client.close()
         return updated_document
